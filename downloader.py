@@ -19,12 +19,12 @@ async def inner_function(url, data):
     ]
 
 
-async def main():
+async def get_price_info(name):
     print('I am going to wait 10 s')
     green_url = gippo_url = 'https://green-dostavka.by/api/v1/products/search/'
     green_data = gippo_data = {
         'storeId': 2,
-        'search': 'хлеб',
+        'search': name,
         'includeAdultOnly': 'true'
     }
     result = await asyncio.gather(
@@ -36,6 +36,10 @@ async def main():
         for price in prices:
             price.update(shop=shop)
             all_prices.append(price)
+    return all_prices
+
+async def main():
+    all_prices = await get_price_info('хлеб')
     print('I am done', all_prices)
 
 

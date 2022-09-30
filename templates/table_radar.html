@@ -1,0 +1,86 @@
+<!DOCTYPE HTML>
+
+<html>
+   <head>
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+      <script type = "text/javascript">
+         var ws;
+         function request_data() {
+
+            if ("WebSocket" in window) {
+               // alert("WebSocket is supported by your Browser!");
+
+               // Let us open a web socket
+               ws = new WebSocket("ws://localhost:8000/radar/data/");
+
+               ws.onopen = function() {
+
+                  // Web Socket is connected, send data using send()
+                  ws.send($('input[name="name"]').val());
+               };
+
+               ws.onmessage = function (evt) {
+                  var received_msg = evt.data;
+                  new_paragraph = $('<p>' + received_msg + '</p>');
+                  new_paragraph.appendTo($('div.chat'))
+               };
+
+               ws.onclose = function() {
+
+                  // websocket is closed.
+                  alert("Connection is closed...");
+               };
+            } else {
+
+               // The browser doesn't support WebSocket
+               alert("WebSocket NOT supported by your Browser!");
+            }
+            var data;
+            form = $('form')[0];
+             data = new FormData(form);
+
+             $.ajax({
+                 url: '/',
+                 data: data,
+                 processData: false,
+                 type: 'POST',
+                 success: function ( data ) {
+                     alert( data );
+                 }
+             });
+
+             e.preventDefault();
+         }
+         function sendMessage() {
+            ws.send($('input[name="message"]').val());
+         }
+      </script>
+      
+
+   </head>
+
+   <body>
+      <div>
+         <form method="post" action="">
+            <label>age</label><input type="number" name="age"/><br/>
+            <label>Name</label><input type="text" name="name"/><br/>
+            <label>Sex</label><select  name="sex">
+              <option value="m">male</option>
+              <option value="f">female</option>
+            </select><br/>
+            <button onclick="request_data()">find</button>
+         </form>
+      </div>
+      <!--<div id = "sse">-->
+         <!--<a href = "javascript:WebSocketTest()">Run WebSocket</a>-->
+      <!--</div>-->
+      <!--<div>-->
+         <!--<input type="text" name="message"/>-->
+         <!--<button onclick="sendMessage();">send</button>-->
+      <!--</div>-->
+      <!--<div class="chat" style="max-height: 400px; overflow-y: scroll; ">-->
+
+      <!--</div>-->
+
+   </body>
+</html>
